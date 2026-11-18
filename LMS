@@ -1,0 +1,193 @@
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_BOOKS 100
+
+struct Book
+{
+    int id;
+    char title[50];
+    char department[20];
+};
+
+struct Book books[MAX_BOOKS] =
+{
+    {101, "Engineering Mathematics", "Maths"},
+    {102, "Calculus", "Maths"},
+    {103, "Linear Algebra", "Maths"},
+    {201, "Applied Physics", "Physics"},
+    {202, "Optics", "Physics"},
+    {203, "Thermodynamics", "Physics"},
+    {301, "Organic Chemistry", "Chemistry"},
+    {302, "Inorganic Chemistry", "Chemistry"},
+    {303, "Physical Chemistry", "Chemistry"}
+};
+
+int bookCount = 9;
+
+// Function to display books
+void displayBooks(char department[])
+{
+    int i, found = 0;
+
+    printf("\n------ Available Books ------\n");
+
+    for (i = 0; i < bookCount; i++)
+    {
+        if (strcmp(department, "Admin") == 0 ||
+            strcmp(books[i].department, department) == 0)
+        {
+            printf("ID: %d | Title: %s | Department: %s\n",
+                   books[i].id,
+                   books[i].title,
+                   books[i].department);
+
+            found = 1;
+        }
+    }
+
+    if (found == 0)
+    {
+        printf("No books available.\n");
+    }
+}
+
+// Function to add a book (Admin only)
+void addBook()
+{
+    if (bookCount >= MAX_BOOKS)
+    {
+        printf("Library is full!\n");
+        return;
+    }
+
+    printf("\nEnter Book ID: ");
+    scanf("%d", &books[bookCount].id);
+
+    printf("Enter Book Title: ");
+    scanf(" %[^\n]", books[bookCount].title);
+
+    printf("Enter Department (Maths/Physics/Chemistry): ");
+    scanf("%19s", books[bookCount].department);
+
+    bookCount++;
+
+    printf("\nBook added successfully!\n");
+}
+
+// Main function
+int main()
+{
+    char role[20];
+    char department[20];
+    char username[30];
+    char password[30];
+
+    int choice;
+
+    printf("===== LIBRARY MANAGEMENT SYSTEM =====\n");
+
+    printf("Enter username: ");
+    scanf("%29s", username);
+
+    printf("Enter password: ");
+    scanf("%29s", password);
+
+    // Admin Login
+    if (strcmp(username, "admin") == 0 &&
+        strcmp(password, "admin123") == 0)
+    {
+        strcpy(role, "Admin");
+        strcpy(department, "Admin");
+
+        printf("\nWelcome Admin!\n");
+
+        while (1)
+        {
+            printf("\n1. View All Books\n");
+            printf("2. Add Book\n");
+            printf("3. Exit\n");
+            printf("Enter choice: ");
+
+            scanf("%d", &choice);
+
+            switch (choice)
+            {
+                case 1:
+                    displayBooks("Admin");
+                    break;
+
+                case 2:
+                    addBook();
+                    break;
+
+                case 3:
+                    printf("Admin logged out.\n");
+                    return 0;
+
+                default:
+                    printf("Invalid choice!\n");
+            }
+        }
+    }
+
+    // Student Login
+    else
+    {
+        printf("\nSelect your department:\n");
+        printf("1. Maths\n");
+        printf("2. Physics\n");
+        printf("3. Chemistry\n");
+
+        printf("Enter choice: ");
+        scanf("%d", &choice);
+
+        switch (choice)
+        {
+            case 1:
+                strcpy(department, "Maths");
+                break;
+
+            case 2:
+                strcpy(department, "Physics");
+                break;
+
+            case 3:
+                strcpy(department, "Chemistry");
+                break;
+
+            default:
+                printf("Invalid department!\n");
+                return 0;
+        }
+
+        printf("\nWelcome to the %s Department Library!\n",
+               department);
+
+        while (1)
+        {
+            printf("\n1. View Department Books\n");
+            printf("2. Exit\n");
+            printf("Enter choice: ");
+
+            scanf("%d", &choice);
+
+            switch (choice)
+            {
+                case 1:
+                    displayBooks(department);
+                    break;
+
+                case 2:
+                    printf("Student logged out.\n");
+                    return 0;
+
+                default:
+                    printf("Invalid choice!\n");
+            }
+        }
+    }
+
+    return 0;
+}
